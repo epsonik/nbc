@@ -6,7 +6,7 @@ from math import sqrt
 from typing import Set, Dict, Tuple, List
 
 from sortedcontainers import SortedSet
-
+import time
 VECTOR_ID = int
 KNB = Dict[VECTOR_ID, Set]
 NDF = Dict[VECTOR_ID, float]
@@ -82,12 +82,14 @@ def _candidate_nbs(backward_search: bool,
 
 
 def _ti(vectors: np.ndarray,
-        reference_point: np.ndarray) -> List[Point]:
+        reference_point: np.ndarray):
     rp_dist = []
     for idx, v in enumerate(vectors):
         dist = distance(v, reference_point)
         rp_dist.append(dist)
+    sort_start_time = time.time()
     arg_sorted_rp_dist = np.argsort(rp_dist)
+    print("Sorting time TI--- %s seconds ---" % (time.time() - sort_start_time))
     points = []
     for i, vector_id in enumerate(arg_sorted_rp_dist):
         if i == 0:
@@ -107,6 +109,9 @@ def _fill(knb, r_knb, vector_idx, neighbours):
 
 def distance(v1, v2) -> float:
     n = v1.shape[0]
+    # print("n")
+    # print(n)
+    print(v1,v2)
     dist = 0.0
     for i in range(n):
         dist += (v1[i] - v2[i])**2.0

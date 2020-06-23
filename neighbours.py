@@ -1,32 +1,31 @@
 from math import sqrt
-from typing import Set, Dict, Tuple
-
-import numpy as np
-
-VECTOR_ID = int
-KNB = Dict[VECTOR_ID, Set]
-NDF = Dict[VECTOR_ID, float]
-R_KNB = Dict[VECTOR_ID, Set]
+import time
 
 
-def distance(v1, v2) -> float:
+
+def distance(v1, v2) :
     n = v1.shape[0]
     dist = 0.0
     for i in range(n):
         dist += (v1[i] - v2[i])**2.0
-    return sqrt(dist)
+    result = sqrt(dist)
+    print(result)
+    return result
 
 
-def k_neighbourhood(vectors: np.ndarray, k: int) -> Tuple[KNB, R_KNB]:
+def k_neighbourhood(vectors, k):
     knb, r_knb = _init(vectors)
-
+    sort_time = 0
     for idx1, v1 in enumerate(vectors):
         neighbour_candidates = []
         for idx2, v2 in enumerate(vectors):
             if idx1 != idx2:
                 dist = distance(v1, v2)
                 neighbour_candidates.append((idx2, dist))
+        sort_start_time = time.time()
         neighbour_candidates.sort(key=lambda t: t[1])
+        sort_time += (time.time() - sort_start_time)
+
         eps = neighbour_candidates[:k][-1][1]
 
         neighbours = set()
@@ -35,10 +34,11 @@ def k_neighbourhood(vectors: np.ndarray, k: int) -> Tuple[KNB, R_KNB]:
                 break
             neighbours.add(i)
         _fill(knb, r_knb, idx1, neighbours)
+    print("Sorting time --- %s seconds ---" % (sort_time))
     return knb, r_knb
 
 
-def ndf(knb: KNB, r_knb: R_KNB) -> NDF:
+def ndf(knb, r_knb):
     ndfs = {}
     for k in knb.keys():
         ndfs[k] = len(r_knb[k]) / len(knb[k])
