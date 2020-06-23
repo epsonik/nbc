@@ -109,13 +109,11 @@ def _fill(knb, r_knb, vector_idx, neighbours):
 
 def distance(v1, v2) -> float:
     n = v1.shape[0]
-    # print("n")
-    # print(n)
-    print(v1,v2)
     dist = 0.0
     for i in range(n):
         dist += (v1[i] - v2[i])**2.0
-    return sqrt(dist)
+    result = sqrt(dist)
+    return result
 
 def _init(vectors):
     knb = {}

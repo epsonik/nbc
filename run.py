@@ -3,7 +3,9 @@ import pandas as pd
 from absl import app
 from absl import flags
 import time
-
+import matplotlib.pyplot as plt
+import seaborn as sns; sns.set()  # for plot styling
+import numpy as np
 import cluster
 
 FLAGS = flags.FLAGS
@@ -29,7 +31,12 @@ def run(_):
     clusters = cluster.nbc(points.values, FLAGS.k, reference_point=reference_point)
     print("Whole app time --- %s seconds ---" % (time.time() - app_start_time))
     cluster.save_to_file(output_path=FLAGS.output_path, clusters = clusters)
+    plot(points, clusters)
 
+
+def plot(X, labels):
+    plt.scatter(X[0], X[1], c=list(labels.values()), s=50, cmap='viridis')
+    plt.show()
 
 def main():
     app.run(run)
